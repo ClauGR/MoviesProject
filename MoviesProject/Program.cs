@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace MoviesProject
 {
@@ -10,12 +12,39 @@ namespace MoviesProject
     {
         static void Main(string[] args)
         {
-            // The code provided will print ‘Hello World’ to the console.
-            // Press Ctrl+F5 (or go to Debug > Start Without Debugging) to run your app.
-            Console.WriteLine("Hello World!");
-            Console.ReadKey();
+            string currentDirectory = Directory.GetCurrentDirectory();
+            DirectoryInfo directory = new DirectoryInfo(currentDirectory);
+            var fileName = Path.Combine(directory.FullName, "movies.json");
+            var movies = DeserialiseMovies(fileName);
 
-            // Go to http://aka.ms/dotnet-get-started-console to continue learning how to build a console app! 
+
+            foreach (var movie in movies)
+            {
+                Console.WriteLine(movie.MovieTitle);
+                
+            }
         }
+
+            public static List<Movie> DeserialiseMovies(string fileName)
+            {
+                var movies = new List<Movie>();
+                var serializer = new JsonSerializer();
+                using (var reader = new StreamReader(fileName))
+
+                using (var jsonReader = new JsonTextReader(reader))
+                {
+                    movies = serializer.Deserialize<List<Movie>>(jsonReader);
+                }
+
+                return movies;
+
+            }
+
+
+
+
+
+     
     }
 }
+
